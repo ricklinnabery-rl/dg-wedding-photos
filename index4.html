@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#fbf8f3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Dakota & Giovanna — Wedding Guestbook & Mobile Scrapbook</title>
+
+    <!-- TAILWIND CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FONT AWESOME ICONS CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+        .font-handwriting { font-family: 'Great Vibes', cursive; }
+        .font-sans { font-family: 'Inter', sans-serif; }
+
+        /* Mobile touch tap highlight reset */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .paper-texture {
+            background-color: #fdfbf7;
+            background-image: radial-gradient(#e5e0d8 0.75px, transparent 0.75px);
+            background-size: 16px 16px;
+        }
+
+        .polaroid-card {
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+            box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -2px rgba(0, 0, 0, 0.03);
+        }
+
+        @media (min-width: 768px) {
+            .polaroid-card:hover {
+                transform: translateY(-6px) scale(1.02) rotate(0deg) !important;
+                box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.12), 0 10px 15px -5px rgba(0, 0, 0, 0.06);
+                z-index: 20;
+            }
+        }
+
+        .washi-tape {
+            background: rgba(243, 237, 226, 0.85);
+            border-left: 2px dashed rgba(200, 190, 175, 0.6);
+            border-right: 2px dashed rgba(200, 190, 175, 0.6);
+            backdrop-filter: blur(2px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        /* Safe Area Padding for mobile screens */
+        .safe-bottom-padding {
+            padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-[#fbf8f3] via-[#f7f2ea] to-[#f2ede4] min-h-screen text-stone-800 font-sans antialiased safe-bottom-padding select-none sm:select-text">
+
+    <header class="w-full bg-white/80 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-40 px-3 py-2.5 sm:px-4 sm:py-3">
+        <div class="max-w-5xl mx-auto flex items-center justify-between text-xs">
+            <!-- Connection Status Badge -->
+            <div id="connection-status-badge" class="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-amber-50 text-amber-700 font-medium border border-amber-200 flex items-center space-x-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                <span id="status-label" class="text-[11px] sm:text-xs">Connecting Cloud Storage...</span>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="flex items-center space-x-2">
+                <button onclick="copyGuestbookLink()" class="px-3 py-1.5 min-h-[36px] rounded-xl bg-stone-100 active:bg-stone-200 text-stone-700 font-medium transition flex items-center space-x-1.5 active:scale-95">
+                    <i class="fa-solid fa-share-nodes text-xs"></i>
+                    <span class="text-xs">Share</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-3 sm:px-6 pt-4 sm:pt-8">
+        
+        <div class="text-center mb-6 sm:mb-10 space-y-2">
+            <div class="inline-block px-3 py-1 bg-stone-200/60 rounded-full text-[10px] sm:text-xs uppercase tracking-[0.2em] text-stone-600 font-semibold">
+                Wedding Guestbook & Mobile Scrapbook
+            </div>
+            <h1 class="text-4xl sm:text-7xl font-cormorant font-bold text-stone-900 tracking-tight leading-tight">
+                Dakota <span class="font-handwriting text-amber-800 text-5xl sm:text-8xl font-normal lowercase px-1">&</span> Giovanna
+            </h1>
+            <p class="text-stone-500 text-xs sm:text-base max-w-lg mx-auto font-sans px-2">
+                Snap photos from your phone, record a voice message, or leave your warmest blessings for D & G!
+            </p>
+        </div>
+
+        <nav class="flex justify-start sm:justify-center border-b border-stone-300 mb-6 max-w-2xl mx-auto overflow-x-auto no-scrollbar font-sans px-1">
+            <button id="tab-wish-btn" onclick="switchTab('wish')" class="py-2.5 px-3.5 sm:px-5 text-xs sm:text-base font-semibold border-b-2 border-[#222222] text-[#222222] transition-all whitespace-nowrap flex items-center space-x-1.5 min-h-[44px]">
+                <i class="fa-regular fa-heart text-rose-500"></i>
+                <span>Wishes</span>
+            </button>
+            <button id="tab-upload-btn" onclick="switchTab('upload')" class="py-2.5 px-3.5 sm:px-5 text-xs sm:text-base font-medium border-b-2 border-transparent text-stone-500 transition-all whitespace-nowrap flex items-center space-x-1.5 min-h-[44px]">
+                <i class="fa-solid fa-camera-retro text-amber-600"></i>
+                <span>Camera & Media</span>
+            </button>
+            <button id="tab-audio-btn" onclick="switchTab('audio')" class="py-2.5 px-3.5 sm:px-5 text-xs sm:text-base font-medium border-b-2 border-transparent text-stone-500 transition-all whitespace-nowrap flex items-center space-x-1.5 min-h-[44px]">
+                <i class="fa-solid fa-microphone-lines text-emerald-600"></i>
+                <span>Voice Note</span>
+            </button>
+            <button id="tab-scrapbook-btn" onclick="switchTab('scrapbook')" class="py-2.5 px-3.5 sm:px-5 text-xs sm:text-base font-medium border-b-2 border-transparent text-stone-500 transition-all whitespace-nowrap flex items-center space-x-1.5 min-h-[44px]">
+                <i class="fa-solid fa-book-bookmark text-stone-700"></i>
+                <span>Scrapbook</span>
+            </button>
+        </nav>
+
+        <section id="section-wish" class="max-w-xl mx-auto bg-white p-5 sm:p-10 rounded-2xl shadow-xs border border-stone-200 paper-texture">
+            <div class="text-center mb-5">
+                <h2 class="text-2xl sm:text-3xl font-cormorant font-semibold text-stone-800">Words of Wisdom & Love</h2>
+                <p class="text-stone-500 text-xs font-sans mt-0.5">Send your blessings or favorite memory to the newlyweds.</p>
+            </div>
+
+            <form id="wish-form" onsubmit="handleWishSubmit(event)" class="space-y-4 font-sans">
+                <div>
+                    <label class="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">Your Name(s) *</label>
+                    <input type="text" id="guest-name" required placeholder="e.g. Cousin Sarah & Alex" 
+                        class="w-full px-3.5 py-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 bg-white/90 text-sm min-h-[48px]">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">Category</label>
+                        <select id="wish-category" class="w-full px-3 py-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 bg-white/90 text-sm min-h-[48px]">
+                            <option value="Marriage Advice">💍 Marriage Advice</option>
+                            <option value="Date Night Idea">🥂 Date Night Idea</option>
+                            <option value="Warm Wishes">✨ Warm Wishes</option>
+                            <option value="Favorite Memory">📸 Favorite Memory</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">Card Accent</label>
+                        <select id="wish-theme" class="w-full px-3 py-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 bg-white/90 text-sm min-h-[48px]">
+                            <option value="theme-ivory">Classic Ivory</option>
+                            <option value="theme-rose">Dusty Rose</option>
+                            <option value="theme-gold">Champagne Gold</option>
+                            <option value="theme-sage">Sage Green</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">Your Message *</label>
+                    <textarea id="wish-message" required rows="3" placeholder="May your love grow stronger with every passing year..." 
+                        class="w-full px-3.5 py-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 bg-white/90 text-stone-800 font-cormorant text-lg sm:text-xl leading-relaxed"></textarea>
+                </div>
+
+                <button type="submit" id="wish-submit-btn" class="w-full py-3.5 bg-[#222222] active:bg-black text-white font-medium text-xs tracking-[0.2em] uppercase rounded-xl transition shadow-sm flex items-center justify-center space-x-2 min-h-[48px] active:scale-[0.99] cursor-pointer">
+                    <i class="fa-regular fa-paper-plane text-amber-400"></i>
+                    <span>Pin Wish To Scrapbook</span>
+                </button>
+            </form>
+        </section>
+
+        <section id="section-upload" class="hidden max-w-xl mx-auto bg-white p-5 sm:p-10 rounded-2xl shadow-xs border border-stone-200 paper-texture">
+            <div class="text-center mb-5">
+                <h2 class="text-2xl sm:text-3xl font-cormorant font-semibold text-stone-800">Share Photos & Videos</h2>
+                <p class="text-stone-500 text-xs font-sans mt-0.5">Take a live photo with your camera or select from your phone gallery!</p>
+            </div>
+
+            <form id="media-form" onsubmit="handleMediaSubmit(event)" class="space-y-4 font-sans">
+                <div>
+                    <label class="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">Uploaded By *</label>
+                    <input type="text" id="uploader-name" required placeholder="Your Name" 
+                        class="w-full px-3.5 py-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 bg-white/90 text-sm min-h-[48px]">
+                </div>
+
+                <!-- DUAL MOBILE CAMERA vs GALLERY BUTTONS -->
+                <div>
+                    <label class="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1.5">Select Photo/Video Source *</label>
+                    
+                    <!-- Hidden File Inputs -->
+                    <input type="file" id="camera-input" accept="image/*" capture="environment" onchange="handleFileSelect(event)" class="hidden">
+                    <input type="file" id="gallery-input" accept="image/*,video/*" onchange="handleFileSelect(event)" class="hidden">
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" onclick="triggerCameraSelect()" class="p-4 rounded-2xl border-2 border-dashed border-amber-600/40 bg-amber-50/50 hover:bg-amber-100/50 active:scale-95 transition flex flex-col items-center justify-center text-amber-900 min-h-[90px]">
+                            <i class="fa-solid fa-camera text-2xl mb-1 text-amber-700"></i>
+                            <span class="text-xs font-semibold">Take Photo</span>
+                            <span class="text-[10px] text-amber-700/70">Launch Mobile Camera</span>
+                        </button>
+
+                        <button type="button" onclick="triggerGallerySelect()" class="p-4 rounded-2xl border-2 border-dashed border-stone-300 bg-stone-50 hover:bg-stone-100 active:scale-95 transition flex flex-col items-center justify-center text-stone-700 min-h-[90px]">
+                            <i class="fa-solid fa-photo-film text-2xl mb-1 text-stone-600"></i>
+                            <span class="text-xs font-semibold">Phone Library</span>
+                            <span class="text-[10px] text-stone-400">Photos or Videos</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PREVIEW BOX -->
+                <div id="file-preview-container" class="hidden border border-stone-200 rounded-xl p-3 bg-stone-50 flex items-center justify-between">
+                    <div class="flex items-center space-x-3 overflow-hidden">
+                        <div id="media-thumbnail-box" class="w-14 h-14 rounded-lg bg-stone-200 flex-shrink-0 flex items-center justify-center overflow-hidden border border-stone-300">
+                            <!-- Thumbnail injected dynamically -->
+                        </div>
+                        <div class="truncate">
+                            <p id="file-name-display" class="text-xs font-semibold text-stone-700 truncate">photo.jpg</p>
+                            <p id="file-status-display" class="text-[10px] text-emerald-600 font-medium">Ready for cloud sync</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="clearFileSelection()" class="text-stone-400 hover:text-red-500 p-2 text-sm">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">Caption or Memory</label>
+                    <textarea id="media-caption" rows="2" placeholder="Dancing under the lights! Cheers to the couple!" 
+                        class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 bg-white/90 text-stone-800 font-cormorant text-lg sm:text-xl"></textarea>
+                </div>
+
+                <button type="submit" id="media-submit-btn" class="w-full py-3.5 bg-[#222222] active:bg-black text-white font-medium text-xs tracking-[0.2em] uppercase rounded-xl transition shadow-sm flex items-center justify-center space-x-2 min-h-[48px] active:scale-[0.99] cursor-pointer">
+                    <i class="fa-solid fa-cloud-arrow-up text-amber-400"></i>
+                    <span>Save To Scrapbook</span>
+                </button>
+            </form>
+        </section>
+
+        <section id="section-audio" class="hidden max-w-xl mx-auto bg-white p-5 sm:p-10 rounded-2xl shadow-xs border border-stone-200 paper-texture text-center">
+            <div class="mb-5">
+                <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-2">
+                    <i class="fa-solid fa-microphone text-xl"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-cormorant font-semibold text-stone-800">Voice Note Guestbook</h2>
+                <p class="text-stone-500 text-xs font-sans mt-0.5">Record a live voice wish directly from your smartphone microphone!</p>
+            </div>
+
+            <div class="space-y-4 font-sans text-left">
+                <div>
+                    <label class="block text-[11px] font-semibold text-stone-700 uppercase tracking-wider mb-1">Your Name *</label>
+                    <input type="text" id="audio-author-name" required placeholder="e.g. Cousin Liam" 
+                        class="w-full px-3.5 py-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 bg-white/90 text-sm min-h-[48px]">
+                </div>
+
+                <!-- RECORDER INTERFACE -->
+                <div class="bg-stone-50 p-5 rounded-2xl border border-stone-200 flex flex-col items-center justify-center">
+                    <div id="recorder-timer" class="text-2xl font-mono font-semibold text-stone-700 mb-3">00:00</div>
+                    
+                    <div class="flex items-center space-x-5 mb-3">
+                        <button id="start-rec-btn" type="button" onclick="startVoiceRecording()" class="w-16 h-16 rounded-full bg-rose-600 active:bg-rose-700 text-white flex items-center justify-center shadow-md transition transform active:scale-95 cursor-pointer">
+                            <i class="fa-solid fa-microphone text-2xl"></i>
+                        </button>
+                        <button id="stop-rec-btn" type="button" onclick="stopVoiceRecording()" disabled class="w-16 h-16 rounded-full bg-stone-300 text-stone-500 flex items-center justify-center transition cursor-not-allowed">
+                            <i class="fa-solid fa-square text-2xl"></i>
+                        </button>
+                    </div>
+
+                    <p id="rec-status-msg" class="text-xs text-stone-500 font-medium">Tap red mic to record audio message</p>
+
+                    <div id="audio-preview-box" class="hidden w-full mt-3 pt-3 border-t border-stone-200">
+                        <p class="text-xs font-semibold text-stone-700 mb-2">Voice Recording Preview:</p>
+                        <audio id="audio-playback" controls class="w-full h-10"></audio>
+                    </div>
+                </div>
+
+                <button type="button" id="upload-audio-btn" onclick="submitVoiceNote()" disabled class="w-full py-3.5 bg-stone-300 text-stone-500 font-medium text-xs tracking-[0.2em] uppercase rounded-xl transition shadow-xs flex items-center justify-center space-x-2 min-h-[48px] cursor-not-allowed">
+                    <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+                    <span>Pin Voice Note To Scrapbook</span>
+                </button>
+            </div>
+        </section>
+
+        <section id="section-scrapbook" class="space-y-4">
+            
+            <!-- SCRAPBOOK CONTROLS TOOLBAR -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-5 rounded-2xl shadow-xs border border-stone-200 font-sans">
+                
+                <!-- Filter Category Buttons -->
+                <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar text-xs py-0.5">
+                    <button onclick="filterScrapbook('all')" id="filter-btn-all" class="px-3 py-1.5 rounded-full bg-stone-900 text-white font-medium transition whitespace-nowrap cursor-pointer">
+                        All (<span id="count-all">0</span>)
+                    </button>
+                    <button onclick="filterScrapbook('wish')" id="filter-btn-wish" class="px-3 py-1.5 rounded-full bg-stone-100 text-stone-600 font-medium transition whitespace-nowrap cursor-pointer">
+                        Wishes (<span id="count-wish">0</span>)
+                    </button>
+                    <button onclick="filterScrapbook('media')" id="filter-btn-media" class="px-3 py-1.5 rounded-full bg-stone-100 text-stone-600 font-medium transition whitespace-nowrap cursor-pointer">
+                        Photos/Videos (<span id="count-media">0</span>)
+                    </button>
+                    <button onclick="filterScrapbook('audio')" id="filter-btn-audio" class="px-3 py-1.5 rounded-full bg-stone-100 text-stone-600 font-medium transition whitespace-nowrap cursor-pointer">
+                        Voice (<span id="count-audio">0</span>)
+                    </button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative w-full sm:w-60">
+                    <input type="text" id="scrapbook-search" oninput="searchScrapbook(this.value)" placeholder="Search name or wish..." 
+                        class="w-full pl-8 pr-3 py-2 text-xs border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/50 bg-stone-50/50 min-h-[38px]">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-stone-400 text-xs"></i>
+                </div>
+            </div>
+
+            <!-- SCRAPBOOK GRID -->
+            <div id="scrapbook-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 pt-1">
+                <!-- Dynamically Populated Cards -->
+            </div>
+
+            <!-- Empty Scrapbook State -->
+            <div id="empty-scrapbook-msg" class="hidden text-center py-12 bg-white/60 rounded-2xl border border-dashed border-stone-300 px-4">
+                <i class="fa-regular fa-folder-open text-3xl text-stone-300 mb-2"></i>
+                <p class="text-xl font-cormorant text-stone-600">No items found.</p>
+                <p class="text-xs font-sans text-stone-400 mt-0.5">Be the first to share a memory or photo!</p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <div class="fixed bottom-3 left-1/2 -translate-x-1/2 z-30 sm:hidden bg-stone-900/90 text-white backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl flex items-center space-x-4 border border-stone-700/50">
+        <button onclick="switchTab('upload'); triggerCameraSelect();" class="flex items-center space-x-1.5 text-xs font-medium text-amber-300 active:scale-95 transition">
+            <i class="fa-solid fa-camera text-sm"></i>
+            <span>Snap Photo</span>
+        </button>
+        <span class="w-px h-4 bg-stone-700"></span>
+        <button onclick="switchTab('wish');" class="flex items-center space-x-1.5 text-xs font-medium text-white active:scale-95 transition">
+            <i class="fa-regular fa-heart text-sm text-rose-400"></i>
+            <span>Wish</span>
+        </button>
+        <span class="w-px h-4 bg-stone-700"></span>
+        <button onclick="switchTab('audio');" class="flex items-center space-x-1.5 text-xs font-medium text-emerald-300 active:scale-95 transition">
+            <i class="fa-solid fa-microphone text-sm"></i>
+            <span>Voice</span>
+        </button>
+    </div>
+
+    <div id="lightbox-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+        <div class="relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button onclick="closeLightbox()" class="absolute top-3 right-3 text-stone-400 active:text-stone-800 w-9 h-9 rounded-full bg-stone-100 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="lightbox-content">
+                <!-- Modal Content Injected Dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-notification" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-stone-900 text-white px-4 py-3 rounded-2xl shadow-2xl font-sans text-xs flex items-center space-x-2.5 transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none w-[90%] max-w-sm justify-center">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toast-message" class="truncate">Operation successful!</span>
+    </div>
+
+    <script>
+        window.__firebase_config = JSON.stringify({
+            apiKey: "PASTE_YOUR_REAL_API_KEY_HERE",
+            authDomain: "your-actual-project-id.firebaseapp.com",
+            projectId: "your-actual-project-id",
+            storageBucket: "your-actual-project-id.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef1234567890"
+        });
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'dg-wedding-guestbook';
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+
+        let scrapbookItems = [];
+        let currentFilter = 'all';
+        let currentSearch = '';
+        
+        let selectedFileBase64 = null;
+        let selectedFileName = '';
+        let selectedFileType = 'image';
+
+        // Voice Recorder State
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let voiceBlobBase64 = null;
+        let recTimerInterval = null;
+        let recSeconds = 0;
+
+        const defaultSampleData = [
+            {
+                id: 'sample-wish-1',
+                type: 'wish',
+                name: 'Aunt Clara & Uncle Mark',
+                category: 'Marriage Advice',
+                message: 'Dear Dakota & Giovanna, always laugh together at the end of every day and never lose your adventurous spirit!',
+                theme: 'theme-rose',
+                timestamp: Date.now() - 3600000 * 3,
+                likes: 8
+            },
+            {
+                id: 'sample-wish-2',
+                type: 'wish',
+                name: 'Liam Vance',
+                category: 'Date Night Idea',
+                message: 'Pick a random city map, close your eyes, point to a spot, and go there for a weekend coffee trip!',
+                theme: 'theme-gold',
+                timestamp: Date.now() - 3600000 * 6,
+                likes: 12
+            }
+        ];
+
+        async function initFirebaseAndSync() {
+            try {
+                const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+                if (!firebaseConfig) {
+                    useLocalFallbackStore();
+                    return;
+                }
+
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currentUser = user;
+                        updateStatusBadge("Live Sync Active", true);
+                        setupFirestoreListener();
+                    } else {
+                        useLocalFallbackStore();
+                    }
+                });
+
+            } catch (err) {
+                useLocalFallbackStore();
+            }
+        }
+
+        function updateStatusBadge(text, isOnline) {
+            const label = document.getElementById('status-label');
+            const badge = document.getElementById('connection-status-badge');
+            if (label && badge) {
+                label.innerText = text;
+                badge.className = isOnline ? 
+                    "px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] sm:text-xs font-medium border border-emerald-200 flex items-center space-x-1.5" : 
+                    "px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-amber-50 text-amber-700 text-[11px] sm:text-xs font-medium border border-amber-200 flex items-center space-x-1.5";
+            }
+        }
+
+        function setupFirestoreListener() {
+            if (!db || !currentUser) return;
+            
+            const itemsCol = collection(db, 'artifacts', appId, 'public', 'data', 'scrapbook_items');
+
+            onSnapshot(itemsCol, (snapshot) => {
+                const fetched = [];
+                snapshot.forEach(docSnap => {
+                    fetched.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                fetched.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                if (fetched.length === 0) {
+                    defaultSampleData.forEach(async (sample) => {
+                        await addDoc(itemsCol, sample);
+                    });
+                } else {
+                    scrapbookItems = fetched;
+                    renderScrapbookGrid();
+                }
+            }, (error) => {
+                useLocalFallbackStore();
+            });
+        }
+
+        function useLocalFallbackStore() {
+            updateStatusBadge("Offline / Local Saved", false);
+            try {
+                const local = localStorage.getItem('dg_wedding_scrapbook_local');
+                if (local) {
+                    scrapbookItems = JSON.parse(local);
+                } else {
+                    scrapbookItems = defaultSampleData;
+                    saveLocalFallback();
+                }
+            } catch (e) {
+                scrapbookItems = defaultSampleData;
+            }
+            renderScrapbookGrid();
+        }
+
+        function saveLocalFallback() {
+            try {
+                localStorage.setItem('dg_wedding_scrapbook_local', JSON.stringify(scrapbookItems));
+            } catch(e) {}
+        }
+
+        window.showToast = function(msg, isSuccess = true) {
+            const toast = document.getElementById('toast-notification');
+            const msgEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
+
+            msgEl.innerText = msg;
+            iconEl.className = isSuccess ? "fa-solid fa-circle-check text-emerald-400 text-base" : "fa-solid fa-triangle-exclamation text-amber-400 text-base";
+
+            toast.classList.remove('-translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            if (navigator.vibrate) {
+                navigator.vibrate(isSuccess ? 50 : [50, 100, 50]);
+            }
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-20', 'opacity-0');
+            }, 3000);
+        };
+
+        window.copyGuestbookLink = function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Dakota & Giovanna Wedding Guestbook',
+                    text: 'Leave a wish or photo for D & G!',
+                    url: window.location.href,
+                }).catch(() => {});
+            } else {
+                const temp = document.createElement('input');
+                temp.value = window.location.href;
+                document.body.appendChild(temp);
+                temp.select();
+                try {
+                    document.execCommand('copy');
+                    showToast("Guestbook link copied!");
+                } catch(e) {
+                    showToast("Link copied!", true);
+                }
+                document.body.removeChild(temp);
+            }
+        };
+
+        window.switchTab = function(tab) {
+            const tabs = ['wish', 'upload', 'audio', 'scrapbook'];
+            tabs.forEach(t => {
+                document.getElementById(`section-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}-btn`).className = "py-2.5 px-3.5 sm:px-5 text-xs sm:text-base font-medium border-b-2 border-transparent text-stone-500 transition-all whitespace-nowrap flex items-center space-x-1.5 min-h-[44px]";
+            });
+
+            document.getElementById(`section-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}-btn`).className = "py-2.5 px-3.5 sm:px-5 text-xs sm:text-base font-semibold border-b-2 border-[#222222] text-[#222222] transition-all whitespace-nowrap flex items-center space-x-1.5 min-h-[44px]";
+
+            if (tab === 'scrapbook') {
+                renderScrapbookGrid();
+            }
+        };
+
+        window.handleWishSubmit = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('guest-name').value.trim();
+            const category = document.getElementById('wish-category').value;
+            const theme = document.getElementById('wish-theme').value;
+            const message = document.getElementById('wish-message').value.trim();
+
+            if (!name || !message) return;
+
+            const newWish = {
+                type: 'wish',
+                name: name,
+                category: category,
+                theme: theme,
+                message: message,
+                timestamp: Date.now(),
+                likes: 0
+            };
+
+            if (db && currentUser) {
+                try {
+                    const col = collection(db, 'artifacts', appId, 'public', 'data', 'scrapbook_items');
+                    await addDoc(col, newWish);
+                } catch(err) {
+                    saveItemLocally(newWish);
+                }
+            } else {
+                saveItemLocally(newWish);
+            }
+
+            document.getElementById('wish-form').reset();
+            showToast("Wish pinned to scrapbook!");
+            switchTab('scrapbook');
+        };
+
+        function saveItemLocally(item) {
+            item.id = 'local-' + Date.now();
+            scrapbookItems.unshift(item);
+            saveLocalFallback();
+            renderScrapbookGrid();
+        }
+
+        window.triggerCameraSelect = function() {
+            document.getElementById('camera-input').click();
+        };
+
+        window.triggerGallerySelect = function() {
+            document.getElementById('gallery-input').click();
+        };
+
+        window.handleFileSelect = function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                if (file.type.startsWith('video/')) {
+                    processVideoFile(file);
+                } else {
+                    processImageFile(file);
+                }
+            }
+        };
+
+        function processImageFile(file) {
+            selectedFileType = 'image';
+            selectedFileName = file.name || 'mobile_photo.jpg';
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 800; // Optimal resolution for mobile memory & speed
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height && width > maxDim) {
+                        height *= maxDim / width;
+                        width = maxDim;
+                    } else if (height > maxDim) {
+                        width *= maxDim / height;
+                        height = maxDim;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    selectedFileBase64 = canvas.toDataURL('image/jpeg', 0.75);
+
+                    const thumbBox = document.getElementById('media-thumbnail-box');
+                    thumbBox.innerHTML = `<img src="${selectedFileBase64}" class="w-full h-full object-cover">`;
+                    document.getElementById('file-name-display').innerText = selectedFileName;
+                    document.getElementById('file-status-display').innerText = "Photo ready for upload";
+                    document.getElementById('file-preview-container').classList.remove('hidden');
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function processVideoFile(file) {
+            if (file.size > 15 * 1024 * 1024) {
+                showToast("Video exceeds 15MB limit. Please select a shorter clip.", false);
+                return;
+            }
+            selectedFileType = 'video';
+            selectedFileName = file.name || 'mobile_video.mp4';
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                selectedFileBase64 = evt.target.result;
+                const thumbBox = document.getElementById('media-thumbnail-box');
+                thumbBox.innerHTML = `<i class="fa-solid fa-file-video text-amber-700 text-xl"></i>`;
+                document.getElementById('file-name-display').innerText = selectedFileName;
+                document.getElementById('file-status-display').innerText = "Video ready for upload";
+                document.getElementById('file-preview-container').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        window.clearFileSelection = function() {
+            selectedFileBase64 = null;
+            selectedFileName = '';
+            selectedFileType = 'image';
+            document.getElementById('camera-input').value = '';
+            document.getElementById('gallery-input').value = '';
+            document.getElementById('file-preview-container').classList.add('hidden');
+        };
+
+        window.handleMediaSubmit = async function(e) {
+            e.preventDefault();
+            const uploader = document.getElementById('uploader-name').value.trim();
+            const caption = document.getElementById('media-caption').value.trim();
+
+            if (!uploader || !selectedFileBase64) {
+                showToast("Please choose a photo/video and enter your name.", false);
+                return;
+            }
+
+            const newMedia = {
+                type: 'media',
+                isVideo: selectedFileType === 'video',
+                uploader: uploader,
+                caption: caption,
+                imageData: selectedFileBase64,
+                timestamp: Date.now(),
+                likes: 0
+            };
+
+            if (db && currentUser) {
+                try {
+                    const col = collection(db, 'artifacts', appId, 'public', 'data', 'scrapbook_items');
+                    await addDoc(col, newMedia);
+                } catch(err) {
+                    saveItemLocally(newMedia);
+                }
+            } else {
+                saveItemLocally(newMedia);
+            }
+
+            document.getElementById('media-form').reset();
+            clearFileSelection();
+            showToast("Saved to scrapbook!");
+            switchTab('scrapbook');
+        };
+
+        window.startVoiceRecording = async function() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                // Safari and Chrome audio MIME type selection
+                let options = { mimeType: 'audio/webm' };
+                if (!MediaRecorder.isTypeSupported('audio/webm')) {
+                    if (MediaRecorder.isTypeSupported('audio/mp4')) {
+                        options = { mimeType: 'audio/mp4' };
+                    } else if (MediaRecorder.isTypeSupported('audio/aac')) {
+                        options = { mimeType: 'audio/aac' };
+                    } else {
+                        options = {};
+                    }
+                }
+
+                mediaRecorder = new MediaRecorder(stream, options);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const mimeType = mediaRecorder.mimeType || 'audio/webm';
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        voiceBlobBase64 = reader.result;
+                        const audioPlayback = document.getElementById('audio-playback');
+                        audioPlayback.src = voiceBlobBase64;
+                        document.getElementById('audio-preview-box').classList.remove('hidden');
+                        
+                        const uploadBtn = document.getElementById('upload-audio-btn');
+                        uploadBtn.disabled = false;
+                        uploadBtn.className = "w-full py-3.5 bg-[#222222] active:bg-black text-white font-medium text-xs tracking-[0.2em] uppercase rounded-xl transition shadow-md flex items-center justify-center space-x-2 min-h-[48px] active:scale-[0.99] cursor-pointer";
+                    };
+                    reader.readAsDataURL(audioBlob);
+                };
+
+                mediaRecorder.start();
+                recSeconds = 0;
+                document.getElementById('recorder-timer').innerText = "00:00";
+                document.getElementById('rec-status-msg').innerText = "Recording... Speak into microphone!";
+                document.getElementById('rec-status-msg').className = "text-xs text-rose-600 font-semibold animate-pulse";
+
+                document.getElementById('start-rec-btn').disabled = true;
+                document.getElementById('start-rec-btn').className = "w-16 h-16 rounded-full bg-stone-300 text-stone-500 flex items-center justify-center cursor-not-allowed";
+
+                document.getElementById('stop-rec-btn').disabled = false;
+                document.getElementById('stop-rec-btn').className = "w-16 h-16 rounded-full bg-stone-900 active:bg-black text-white flex items-center justify-center shadow-lg transition transform active:scale-95 cursor-pointer";
+
+                recTimerInterval = setInterval(() => {
+                    recSeconds++;
+                    const mins = String(Math.floor(recSeconds / 60)).padStart(2, '0');
+                    const secs = String(recSeconds % 60).padStart(2, '0');
+                    document.getElementById('recorder-timer').innerText = `${mins}:${secs}`;
+                    if (recSeconds >= 60) stopVoiceRecording();
+                }, 1000);
+
+            } catch(err) {
+                showToast("Microphone access denied or unavailable.", false);
+            }
+        };
+
+        window.stopVoiceRecording = function() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+            clearInterval(recTimerInterval);
+
+            document.getElementById('rec-status-msg').innerText = "Recording saved! Listen below.";
+            document.getElementById('rec-status-msg').className = "text-xs text-emerald-600 font-medium";
+
+            document.getElementById('start-rec-btn').disabled = false;
+            document.getElementById('start-rec-btn').className = "w-16 h-16 rounded-full bg-rose-600 active:bg-rose-700 text-white flex items-center justify-center shadow-md transition transform active:scale-95 cursor-pointer";
+
+            document.getElementById('stop-rec-btn').disabled = true;
+            document.getElementById('stop-rec-btn').className = "w-16 h-16 rounded-full bg-stone-300 text-stone-500 flex items-center justify-center cursor-not-allowed";
+        };
+
+        window.submitVoiceNote = async function() {
+            const author = document.getElementById('audio-author-name').value.trim();
+            if (!author || !voiceBlobBase64) {
+                showToast("Please enter your name and record audio first.", false);
+                return;
+            }
+
+            const newAudioNote = {
+                type: 'audio',
+                author: author,
+                audioData: voiceBlobBase64,
+                durationSeconds: recSeconds,
+                timestamp: Date.now(),
+                likes: 0
+            };
+
+            if (db && currentUser) {
+                try {
+                    const col = collection(db, 'artifacts', appId, 'public', 'data', 'scrapbook_items');
+                    await addDoc(col, newAudioNote);
+                } catch(err) {
+                    saveItemLocally(newAudioNote);
+                }
+            } else {
+                saveItemLocally(newAudioNote);
+            }
+
+            document.getElementById('audio-author-name').value = '';
+            document.getElementById('audio-preview-box').classList.add('hidden');
+            document.getElementById('upload-audio-btn').disabled = true;
+            document.getElementById('upload-audio-btn').className = "w-full py-3.5 bg-stone-300 text-stone-500 font-medium text-xs tracking-[0.2em] uppercase rounded-xl transition shadow-xs flex items-center justify-center space-x-2 min-h-[48px] cursor-not-allowed";
+            
+            showToast("Voice note saved!");
+            switchTab('scrapbook');
+        };
+
+        window.filterScrapbook = function(type) {
+            currentFilter = type;
+            ['all', 'wish', 'media', 'audio'].forEach(t => {
+                const btn = document.getElementById(`filter-btn-${t}`);
+                if (btn) {
+                    btn.className = (t === type) ? 
+                        "px-3 py-1.5 rounded-full bg-stone-900 text-white font-medium transition text-xs whitespace-nowrap cursor-pointer" : 
+                        "px-3 py-1.5 rounded-full bg-stone-100 text-stone-600 font-medium transition text-xs whitespace-nowrap cursor-pointer";
+                }
+            });
+            renderScrapbookGrid();
+        };
+
+        window.searchScrapbook = function(val) {
+            currentSearch = val.toLowerCase();
+            renderScrapbookGrid();
+        };
+
+        window.toggleLike = async function(id, event) {
+            if (event) event.stopPropagation();
+            const item = scrapbookItems.find(i => i.id === id);
+            if (!item) return;
+
+            const newLikes = (item.likes || 0) + 1;
+            item.likes = newLikes;
+
+            if (db && currentUser && id && !id.startsWith('local-')) {
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'scrapbook_items', id);
+                    await updateDoc(docRef, { likes: newLikes });
+                } catch(e) {
+                    saveLocalFallback();
+                }
+            } else {
+                saveLocalFallback();
+            }
+            renderScrapbookGrid();
+            showToast("Liked moment! ❤️");
+        };
+
+        function renderScrapbookGrid() {
+            const grid = document.getElementById('scrapbook-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            document.getElementById('count-all').innerText = scrapbookItems.length;
+            document.getElementById('count-wish').innerText = scrapbookItems.filter(i => i.type === 'wish').length;
+            document.getElementById('count-media').innerText = scrapbookItems.filter(i => i.type === 'media').length;
+            document.getElementById('count-audio').innerText = scrapbookItems.filter(i => i.type === 'audio').length;
+
+            const filtered = scrapbookItems.filter(item => {
+                if (currentFilter !== 'all' && item.type !== currentFilter) return false;
+                if (currentSearch) {
+                    const searchStr = (item.name || item.uploader || item.author || '') + ' ' + (item.message || item.caption || item.category || '');
+                    return searchStr.toLowerCase().includes(currentSearch);
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                document.getElementById('empty-scrapbook-msg').classList.remove('hidden');
+                return;
+            } else {
+                document.getElementById('empty-scrapbook-msg').classList.add('hidden');
+            }
+
+            const rotationClasses = ['rotate-1', '-rotate-1', 'rotate-0'];
+
+            filtered.forEach((item, index) => {
+                const rot = rotationClasses[index % rotationClasses.length];
+                const card = document.createElement('div');
+
+                if (item.type === 'wish') {
+                    let themeStyle = 'bg-stone-50 border-stone-200';
+                    let badgeStyle = 'bg-stone-200 text-stone-700';
+                    if (item.theme === 'theme-rose') {
+                        themeStyle = 'bg-rose-50/80 border-rose-100';
+                        badgeStyle = 'bg-rose-200/80 text-rose-800';
+                    } else if (item.theme === 'theme-gold') {
+                        themeStyle = 'bg-amber-50/80 border-amber-100';
+                        badgeStyle = 'bg-amber-200/80 text-amber-800';
+                    } else if (item.theme === 'theme-sage') {
+                        themeStyle = 'bg-emerald-50/80 border-emerald-100';
+                        badgeStyle = 'bg-emerald-200/80 text-emerald-800';
+                    }
+
+                    card.className = `polaroid-card p-4 sm:p-6 rounded-2xl border ${themeStyle} sm:${rot} relative flex flex-col justify-between cursor-pointer`;
+                    card.onclick = () => openLightbox(item);
+
+                    card.innerHTML = `
+                        <div class="washi-tape w-16 h-4 absolute -top-2 left-1/2 -translate-x-1/2"></div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2 font-sans">
+                                <span class="text-[9px] sm:text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-full ${badgeStyle}">
+                                    ${item.category || 'Wish'}
+                                </span>
+                                <span class="text-[10px] text-stone-400">
+                                    ${new Date(item.timestamp).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <p class="font-cormorant text-lg sm:text-xl text-stone-800 italic leading-relaxed mb-3">
+                                "${item.message}"
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-stone-200/60">
+                            <span class="font-handwriting text-xl sm:text-2xl text-stone-700 font-bold">
+                                — ${item.name}
+                            </span>
+                            <button onclick="toggleLike('${item.id}', event)" class="text-xs text-rose-500 p-1.5 font-sans flex items-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-heart"></i>
+                                <span>${item.likes || 0}</span>
+                            </button>
+                        </div>
+                    `;
+                } else if (item.type === 'media') {
+                    card.className = `polaroid-card p-3 sm:p-4 rounded-2xl bg-white border border-stone-200 sm:${rot} relative flex flex-col justify-between cursor-pointer`;
+                    card.onclick = () => openLightbox(item);
+
+                    const mediaElement = item.isVideo ? 
+                        `<video src="${item.imageData}" controls class="w-full h-48 sm:h-60 object-cover rounded-xl"></video>` : 
+                        `<img src="${item.imageData}" alt="Photo" class="w-full h-48 sm:h-60 object-cover rounded-xl" loading="lazy">`;
+
+                    card.innerHTML = `
+                        <div class="washi-tape w-16 h-4 absolute -top-2 right-4"></div>
+                        <div>
+                            <div class="mb-2 overflow-hidden rounded-xl border border-stone-200 bg-stone-100 relative">
+                                ${mediaElement}
+                            </div>
+                            ${item.caption ? `<p class="font-cormorant text-base sm:text-lg text-stone-800 italic mb-2 px-1">"${item.caption}"</p>` : ''}
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-stone-100">
+                            <span class="font-handwriting text-xl sm:text-2xl text-stone-700 truncate pr-2">
+                                ${item.isVideo ? 'Video' : 'Photo'} by ${item.uploader}
+                            </span>
+                            <button onclick="toggleLike('${item.id}', event)" class="text-xs text-rose-500 p-1.5 font-sans flex items-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-heart"></i>
+                                <span>${item.likes || 0}</span>
+                            </button>
+                        </div>
+                    `;
+                } else if (item.type === 'audio') {
+                    card.className = `polaroid-card p-4 sm:p-6 rounded-2xl bg-emerald-50/70 border border-emerald-100 sm:${rot} relative flex flex-col justify-between`;
+
+                    card.innerHTML = `
+                        <div class="washi-tape w-16 h-4 absolute -top-2 left-4"></div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2 font-sans">
+                                <span class="text-[9px] sm:text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-800">
+                                    🎙️ Voice Note
+                                </span>
+                                <span class="text-[10px] text-stone-400">
+                                    ${new Date(item.timestamp).toLocaleDateString()}
+                                </span>
+                            </div>
+                            
+                            <div class="my-3 bg-white p-2.5 rounded-xl border border-emerald-200">
+                                <audio src="${item.audioData}" controls class="w-full h-8"></audio>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-emerald-200/60">
+                            <span class="font-handwriting text-xl sm:text-2xl text-stone-700 font-bold">
+                                — ${item.author}
+                            </span>
+                            <button onclick="toggleLike('${item.id}', event)" class="text-xs text-rose-500 p-1.5 font-sans flex items-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-heart"></i>
+                                <span>${item.likes || 0}</span>
+                            </button>
+                        </div>
+                    `;
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        window.openLightbox = function(item) {
+            const modal = document.getElementById('lightbox-modal');
+            const content = document.getElementById('lightbox-content');
+            content.innerHTML = '';
+            document.body.style.overflow = 'hidden'; // Mobile scroll-lock
+
+            if (item.type === 'wish') {
+                content.innerHTML = `
+                    <div class="text-center max-w-lg my-2">
+                        <span class="text-[10px] uppercase font-sans font-semibold tracking-wider px-2.5 py-1 rounded-full bg-stone-100 text-stone-700">
+                            ${item.category}
+                        </span>
+                        <p class="font-cormorant text-2xl sm:text-4xl text-stone-800 italic leading-relaxed my-4 sm:my-6">
+                            "${item.message}"
+                        </p>
+                        <h3 class="font-handwriting text-3xl sm:text-4xl text-stone-700">
+                            — ${item.name}
+                        </h3>
+                        <p class="text-[10px] text-stone-400 mt-2 font-sans">
+                            ${new Date(item.timestamp).toLocaleDateString()}
+                        </p>
+                    </div>
+                `;
+            } else if (item.type === 'media') {
+                const mediaDisplay = item.isVideo ? 
+                    `<video src="${item.imageData}" controls autoplay class="max-h-[60vh] w-full rounded-xl shadow-md mb-3"></video>` : 
+                    `<img src="${item.imageData}" alt="Photo" class="max-h-[60vh] w-auto object-contain rounded-xl shadow-md mb-3">`;
+
+                content.innerHTML = `
+                    <div class="w-full flex flex-col items-center">
+                        ${mediaDisplay}
+                        ${item.caption ? `<p class="font-cormorant text-xl text-stone-800 italic mb-2 text-center">"${item.caption}"</p>` : ''}
+                        <div class="flex items-center justify-between w-full pt-3 border-t border-stone-200 font-sans">
+                            <span class="font-handwriting text-2xl text-stone-700">${item.isVideo ? 'Video' : 'Photo'} by ${item.uploader}</span>
+                            <button onclick="toggleLike('${item.id}')" class="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-xs font-semibold flex items-center space-x-1 transition cursor-pointer">
+                                <i class="fa-solid fa-heart"></i>
+                                <span>${item.likes || 0} Likes</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            modal.classList.remove('hidden');
+        };
+
+        window.closeLightbox = function() {
+            document.getElementById('lightbox-modal').classList.add('hidden');
+            document.body.style.overflow = ''; // Unlock mobile scroll
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initFirebaseAndSync();
+        });
+    </script>
+</body>
+</html>
